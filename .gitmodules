@@ -1,0 +1,3 @@
+[submodule "cuda-grammar-antlr4"]
+	path = cuda-grammar-antlr4
+	url = https://github.com/bivex/cuda-grammar-antlr4
