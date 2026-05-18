@@ -17,6 +17,9 @@ from src.infrastructure.rules.integer_overflow_in_index_rule import IntegerOverf
 from src.infrastructure.rules.kernel_launch_in_loop_rule import KernelLaunchInLoopRule
 from src.infrastructure.rules.double_usage_rule import DoubleUsageRule
 from src.infrastructure.rules.slow_math_function_rule import SlowMathFunctionRule
+from src.infrastructure.rules.missing_kernel_error_check_rule import MissingKernelErrorCheckRule
+from src.infrastructure.rules.large_shared_memory_allocation_rule import LargeSharedMemoryAllocationRule
+from src.infrastructure.rules.volatile_usage_rule import VolatileUsageRule
 
 def print_smells(smells):
     if not smells:
@@ -52,7 +55,10 @@ def main():
         IntegerOverflowInIndexRule,
         KernelLaunchInLoopRule,
         DoubleUsageRule,
-        SlowMathFunctionRule
+        SlowMathFunctionRule,
+        MissingKernelErrorCheckRule,
+        LargeSharedMemoryAllocationRule,
+        VolatileUsageRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 

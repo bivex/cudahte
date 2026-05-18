@@ -25,23 +25,36 @@ class SuboptimalGridBlockRule(CUDAParserVisitor):
                     grid = config[0].strip()
                     block = config[1].strip()
                     
-                    # Warn if block size is a small constant (e.g. < 128)
-                    if block.isdigit() and int(block) < 128:
-                        self.smells.append(CodeSmell(
-                            rule_name="SuboptimalGridBlock",
-                            description=f"Suboptimal block size '{block}' in kernel launch. Consider using multiples of 32, ideally 128 or 256 for better occupancy.",
-                            file_path=self.file_path,
-                            position=Position(ctx.start.line, ctx.start.column),
-                            severity="WARNING"
-                        ))
-                    
-                    # Warn if grid is hardcoded to 1 and block is small
-                    if grid == '1' and block.isdigit() and int(block) <= 1024:
-                        self.smells.append(CodeSmell(
-                            rule_name="SuboptimalGridBlock",
-                            description=f"Kernel launched with a single block (grid=1, block={block}). The GPU will be severely underutilized.",
-                            file_path=self.file_path,
-                            position=Position(ctx.start.line, ctx.start.column),
-                            severity="WARNING"
-                        ))
+                    if block.isdigit():
+                        block_size = int(block)
+                        
+                        # Warn if block size is not a multiple of 32
+                        if block_size % 32 != 0:
+                            self.smells.append(CodeSmell(
+                                rule_name="SuboptimalGridBlock",
+                                description=f"Block size '{block_size}' is not a multiple of 32 (warp size). This leads to underutilized warps.",
+                                file_path=self.file_path,
+                                position=Position(ctx.start.line, ctx.start.column),
+                                severity="WARNING"
+                            ))
+                        
+                        # Warn if block size is a small constant (e.g. < 128)
+                        elif block_size < 128:
+                            self.smells.append(CodeSmell(
+                                rule_name="SuboptimalGridBlock",
+                                description=f"Suboptimal block size '{block_size}' in kernel launch. Consider using ideally 128 or 256 for better occupancy.",
+                                file_path=self.file_path,
+                                position=Position(ctx.start.line, ctx.start.column),
+                                severity="WARNING"
+                            ))
+                        
+                        # Warn if grid is hardcoded to 1 and block is small
+                        if grid == '1' and block_size <= 1024:
+                            self.smells.append(CodeSmell(
+                                rule_name="SuboptimalGridBlock",
+                                description=f"Kernel launched with a single block (grid=1, block={block}). The GPU will be severely underutilized.",
+                                file_path=self.file_path,
+                                position=Position(ctx.start.line, ctx.start.column),
+                                severity="WARNING"
+                            ))
         return self.visitChildren(ctx)

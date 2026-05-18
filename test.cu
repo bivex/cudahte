@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <cuda.h>
 
+volatile int flag = 0; // Volatile usage smell
+
 __global__ void myKernel() {
+    __shared__ float huge_arr[16384]; // Large shared memory allocation smell
+
     // Integer overflow in index
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     
@@ -24,6 +28,9 @@ __global__ void myKernel() {
 void doSomething() {
     int *d_a;
     cudaMalloc(&d_a, 100); // Unchecked API & Mem Leak
+    
+    // Missing cudaGetLastError check below (MissingKernelErrorCheck)
+    myKernel<<<1, 30>>>(); // Suboptimal Block (not multiple of 32)
     
     for (int i = 0; i < 10; i++) {
         cudaMemcpy(d_a, d_a, 100, cudaMemcpyHostToDevice); // Host-Device Transfer inside loop
