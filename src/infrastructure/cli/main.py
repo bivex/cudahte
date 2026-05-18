@@ -12,6 +12,11 @@ from src.infrastructure.rules.host_device_transfer_in_loop_rule import HostDevic
 from src.infrastructure.rules.warp_divergence_rule import WarpDivergenceRule
 from src.infrastructure.rules.suboptimal_grid_block_rule import SuboptimalGridBlockRule
 from src.infrastructure.rules.cuda_device_synchronize_rule import CudaDeviceSynchronizeInHotPathRule
+from src.infrastructure.rules.syncthreads_in_divergent_code_rule import SyncthreadsInDivergentCodeRule
+from src.infrastructure.rules.integer_overflow_in_index_rule import IntegerOverflowInIndexRule
+from src.infrastructure.rules.kernel_launch_in_loop_rule import KernelLaunchInLoopRule
+from src.infrastructure.rules.double_usage_rule import DoubleUsageRule
+from src.infrastructure.rules.slow_math_function_rule import SlowMathFunctionRule
 
 def print_smells(smells):
     if not smells:
@@ -42,7 +47,12 @@ def main():
         HostDeviceTransferInLoopRule,
         WarpDivergenceRule,
         SuboptimalGridBlockRule,
-        CudaDeviceSynchronizeInHotPathRule
+        CudaDeviceSynchronizeInHotPathRule,
+        SyncthreadsInDivergentCodeRule,
+        IntegerOverflowInIndexRule,
+        KernelLaunchInLoopRule,
+        DoubleUsageRule,
+        SlowMathFunctionRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 

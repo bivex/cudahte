@@ -21,6 +21,11 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | **HostDeviceTransferInLoop** | Detects if `cudaMemcpy` is called inside an iteration statement (`for`, `while`, `do-while`), which leads to massive PCIe bottlenecking. | CRITICAL |
 | **SuboptimalGridBlock** | Checks kernel launch parameters `<<<grid, block>>>`. It flags a warning if the `block` size is hardcoded to a value `< 128`, or if the `grid` is just `1`. | WARNING |
 | **CudaDeviceSynchronizeInHotPath** | Detects if `cudaDeviceSynchronize()` is called inside a loop, which blocks the CPU from doing any other work and breaks async pipelines. | WARNING |
+| **SyncthreadsInDivergentCode** | Calling `__syncthreads()` inside a divergent branch (`if` statements depending on thread indices) can cause a deadlock. Ensures all threads reach the barrier. | CRITICAL |
+| **IntegerOverflowInIndex** | Detects global thread index calculation (`blockIdx.x * blockDim.x + threadIdx.x`) assigned to an `int`. For large arrays, this causes integer overflow. Recommends using `size_t`. | CRITICAL |
+| **KernelLaunchInLoop** | Detects kernel launches (`<<<...>>>`) inside loops. Launch overhead multiplies by iterations; recommends batching or using CUDA Graphs. | CRITICAL |
+| **DoubleUsage** | Detects usage of `double` precision. Double precision is significantly slower than float on most consumer GPUs. Recommends using `float` if precision is not critical. | WARNING |
+| **SlowMathFunction** | Detects standard math functions (e.g., `sin`, `cos`, `sqrt`) that might not be optimal. Recommends using intrinsic fast functions (e.g., `__sinf`) or compiling with `--use_fast_math`. | WARNING |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 
