@@ -8,6 +8,10 @@ from src.application.use_cases import AnalyzeFileUseCase, AnalyzeDirectoryUseCas
 from src.infrastructure.parsers.antlr_cuda_analyzer import AntlrCudaAnalyzer
 from src.infrastructure.rules.cuda_api_error_check_rule import CudaApiErrorCheckRule
 from src.infrastructure.rules.memory_leak_rule import MemoryLeakRule
+from src.infrastructure.rules.host_device_transfer_in_loop_rule import HostDeviceTransferInLoopRule
+from src.infrastructure.rules.warp_divergence_rule import WarpDivergenceRule
+from src.infrastructure.rules.suboptimal_grid_block_rule import SuboptimalGridBlockRule
+from src.infrastructure.rules.cuda_device_synchronize_rule import CudaDeviceSynchronizeInHotPathRule
 
 def print_smells(smells):
     if not smells:
@@ -32,7 +36,14 @@ def main():
     args = parser.parse_args()
 
     # Wire up the analyzer with our rules
-    rules = [CudaApiErrorCheckRule, MemoryLeakRule]
+    rules = [
+        CudaApiErrorCheckRule, 
+        MemoryLeakRule,
+        HostDeviceTransferInLoopRule,
+        WarpDivergenceRule,
+        SuboptimalGridBlockRule,
+        CudaDeviceSynchronizeInHotPathRule
+    ]
     analyzer = AntlrCudaAnalyzer(rules)
 
     smells = []

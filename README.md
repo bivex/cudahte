@@ -17,6 +17,10 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | :--- | :--- | :--- |
 | **UncheckedCudaAPI** | CUDA API calls (e.g., `cudaMalloc`, `cudaMemcpy`, `cudaFree`, `cudaDeviceSynchronize`) should have their return values checked for errors. This rule detects if the call is not wrapped in a checking macro (like `CHECK`, `EXPECT`, `assert`) or assigned to a variable within 8 levels of the AST. | CRITICAL |
 | **PotentialMemoryLeak** | A naive heuristic that triggers if the number of `cudaMalloc` calls in a file is greater than the number of `cudaFree` calls. | WARNING |
+| **WarpDivergence** | Detects potential warp divergence by checking if an `if` statement's condition explicitly depends on `threadIdx` or `blockIdx` using equality or modulo operators. | CRITICAL |
+| **HostDeviceTransferInLoop** | Detects if `cudaMemcpy` is called inside an iteration statement (`for`, `while`, `do-while`), which leads to massive PCIe bottlenecking. | CRITICAL |
+| **SuboptimalGridBlock** | Checks kernel launch parameters `<<<grid, block>>>`. It flags a warning if the `block` size is hardcoded to a value `< 128`, or if the `grid` is just `1`. | WARNING |
+| **CudaDeviceSynchronizeInHotPath** | Detects if `cudaDeviceSynchronize()` is called inside a loop, which blocks the CPU from doing any other work and breaks async pipelines. | WARNING |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 
