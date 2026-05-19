@@ -20,6 +20,7 @@ from src.infrastructure.rules.slow_math_function_rule import SlowMathFunctionRul
 from src.infrastructure.rules.missing_kernel_error_check_rule import MissingKernelErrorCheckRule
 from src.infrastructure.rules.large_shared_memory_allocation_rule import LargeSharedMemoryAllocationRule
 from src.infrastructure.rules.volatile_usage_rule import VolatileUsageRule
+from src.infrastructure.rules.default_stream_usage_rule import DefaultStreamUsageRule
 
 def print_smells(smells):
     if not smells:
@@ -58,7 +59,8 @@ def main():
         SlowMathFunctionRule,
         MissingKernelErrorCheckRule,
         LargeSharedMemoryAllocationRule,
-        VolatileUsageRule
+        VolatileUsageRule,
+        DefaultStreamUsageRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 

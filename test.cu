@@ -33,8 +33,9 @@ void doSomething() {
     myKernel<<<1, 30>>>(); // Suboptimal Block (not multiple of 32)
     
     for (int i = 0; i < 10; i++) {
-        cudaMemcpy(d_a, d_a, 100, cudaMemcpyHostToDevice); // Host-Device Transfer inside loop
-        myKernel<<<1, 32>>>(); // Suboptimal Block & Grid AND Kernel launch inside loop
+        cudaMemcpyAsync(d_a, d_a, 100, cudaMemcpyHostToDevice, 0); // Default stream usage
+        myKernel<<<1, 32, 0, 0>>>( ); // Default stream usage explicitly
+        myKernel<<<1, 32>>>( ); // Default stream usage implicitly
         cudaDeviceSynchronize(); // Synchronize inside hot path loop
     }
 }
