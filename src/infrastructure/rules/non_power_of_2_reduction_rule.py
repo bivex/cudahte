@@ -41,7 +41,7 @@ class NonPowerOf2ReductionBlockRule(CUDAParserVisitor):
 
         # Detect reduction pattern: shared memory + iterative halving loop
         is_reduction = (
-            "/=" in func_lines or "/ 2" in func_lines or ">>1" in func_lines
+            "/=" in func_lines or "/ 2" in func_lines or ">>" in func_lines
         ) and "__shared__" in func_lines
         if not is_reduction:
             return self.visitChildren(ctx)
@@ -58,7 +58,11 @@ class NonPowerOf2ReductionBlockRule(CUDAParserVisitor):
             r"(?:blockDim\.\w+|block_size|THREADS|threadsPerBlock)\s*=\s*(\d+)",
             func_lines,
         )
-        all_sizes = set(int(s) for s in define_sizes + block_var_assigns)
+
+        # Also find array sizes in __shared__ declarations
+        shared_array_sizes = re.findall(r"__shared__\s+\w+\s+\w+\[(\d+)\]", func_lines)
+
+        all_sizes = set(int(s) for s in define_sizes + block_var_assigns + shared_array_sizes)
 
         for size in all_sizes:
             if size > 0 and (size & (size - 1)) != 0:
