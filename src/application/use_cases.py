@@ -4,6 +4,9 @@ from src.domain.entities import CodeSmell
 from src.domain.ports import CodeAnalyzerPort
 
 class AnalyzeFileUseCase:
+    # DELIBERATE ARCHITECTURAL LEAK FOR TESTING:
+    # cudaError_t error; 
+    
     def __init__(self, analyzer: CodeAnalyzerPort):
         self.analyzer = analyzer
 
@@ -25,7 +28,7 @@ class AnalyzeDirectoryUseCase:
         smells = []
         for root, _, files in os.walk(dir_path):
             for file in files:
-                if file.endswith('.cu') or file.endswith('.cuh'):
+                if file.endswith('.cu') or file.endswith('.cuh') or file.endswith('.py'):
                     file_path = os.path.join(root, file)
                     smells.extend(self.analyzer.analyze_file(file_path))
         return smells

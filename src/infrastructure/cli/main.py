@@ -25,6 +25,7 @@ from src.infrastructure.rules.hardcoded_device_id_rule import HardcodedDeviceIdR
 from src.infrastructure.rules.deprecated_api_rule import DeprecatedApiRule
 from src.infrastructure.rules.global_memory_coalescing_rule import GlobalMemoryCoalescingRule
 from src.infrastructure.rules.shared_memory_bank_conflict_rule import SharedMemoryBankConflictRule
+from src.infrastructure.rules.architectural_cuda_leak_rule import ArchitecturalCudaLeakRule
 
 def print_smells(smells):
     if not smells:
@@ -68,7 +69,8 @@ def main():
         HardcodedDeviceIdRule,
         DeprecatedApiRule,
         GlobalMemoryCoalescingRule,
-        SharedMemoryBankConflictRule
+        SharedMemoryBankConflictRule,
+        ArchitecturalCudaLeakRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 
