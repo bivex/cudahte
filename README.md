@@ -34,6 +34,8 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | **DeprecatedAPI** | Detects usage of legacy CUDA APIs like `cudaThreadSynchronize` and recommends modern alternatives. | WARNING |
 | **UncoalescedMemoryAccess** | Detects non-coalesced memory access patterns like `ptr[threadIdx.x * stride]` where `stride > 1`, which drastically reduces global memory throughput. | CRITICAL |
 | **SharedMemoryBankConflict** | Detects access to `__shared__` memory with a stride that is a multiple of 32, causing serialization of access within a warp. | WARNING |
+| **ArchitecturalCudaLeak** | Detects CUDA-specific code or headers inside Domain/Application layers, enforcing Clean Architecture boundaries. | CRITICAL |
+| **UnifiedMemoryWithoutPrefetch** | Detects `cudaMallocManaged` without explicit `cudaMemPrefetchAsync` in the same context, which triggers slow page faults. | WARNING |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 

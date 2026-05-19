@@ -15,26 +15,23 @@ class ArchitecturalCudaLeakRule:
 
     def visit(self, tree):
         # We don't use the tree, we just check the file content
-        # Check if the file is in domain or application layers
-        if "src/domain" in self.file_path or "src/application" in self.file_path:
+        normalized_path = os.path.normpath(self.file_path).replace('\\', '/')
+        if "/src/domain" in normalized_path or "/src/application" in normalized_path:
             try:
                 with open(self.file_path, 'r') as f:
-                    content = f.read()
-                    # Look for CUDA keywords or headers
+                    lines = f.readlines()
                     cuda_keywords = ['cuda.h', 'cudaMalloc', 'cudaFree', 'cudaMemcpy', 'cudaError_t', 'cudaSuccess']
-                    for keyword in cuda_keywords:
-                        if keyword in content:
-                            # Find line number (naive)
-                            lines = content.split('\n')
-                            for i, line in enumerate(lines):
-                                if keyword in line:
-                                    from src.domain.entities import CodeSmell, Position
-                                    self.smells.append(CodeSmell(
-                                        rule_name="ArchitecturalCudaLeak",
-                                        description=f"Clean Architecture Violation: CUDA-specific dependency '{keyword}' found in Domain/Application layer. Logic should depend on Ports, not Infrastructure.",
-                                        file_path=self.file_path,
-                                        position=Position(i + 1, 0),
-                                        severity="CRITICAL"
-                                    ))
+                    for i, line in enumerate(lines):
+                        for keyword in cuda_keywords:
+                            if keyword in line:
+                                from src.domain.entities import CodeSmell, Position
+                                self.smells.append(CodeSmell(
+                                    rule_name="ArchitecturalCudaLeak",
+                                    description=f"Clean Architecture Violation: CUDA-specific dependency '{keyword}' found in Domain/Application layer. Logic should depend on Ports, not Infrastructure.",
+                                    file_path=self.file_path,
+                                    position=Position(i + 1, 0),
+                                    severity="CRITICAL"
+                                ))
+                                break # One smell per line is enough
             except Exception:
                 pass

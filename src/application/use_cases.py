@@ -4,9 +4,6 @@ from src.domain.entities import CodeSmell
 from src.domain.ports import CodeAnalyzerPort
 
 class AnalyzeFileUseCase:
-    # DELIBERATE ARCHITECTURAL LEAK FOR TESTING:
-    # cudaError_t error; 
-    
     def __init__(self, analyzer: CodeAnalyzerPort):
         self.analyzer = analyzer
 

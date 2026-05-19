@@ -33,6 +33,7 @@ __global__ void myKernel(float* data) {
 
 void doSomething() {
     int *d_a;
+    cudaMallocManaged(&d_a, 100); // Managed memory without prefetch
     cudaMalloc(&d_a, 100); // Unchecked API & Mem Leak
     
     // Missing cudaGetLastError check below (MissingKernelErrorCheck)
