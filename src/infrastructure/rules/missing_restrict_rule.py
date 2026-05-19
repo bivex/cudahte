@@ -32,13 +32,21 @@ class MissingRestrictOnKernelPointersRule(CUDAParserVisitor):
                 break
         return '\n'.join(result)
 
+    @staticmethod
+    def _strip_comments(text: str) -> str:
+        """Remove // and /* */ comments so regexes are not fooled by commented code."""
+        text = re.sub(r"//.*", "", text)
+        text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+        return text
+
     def visitFunctionDefinition(self, ctx):
         func_text = self._get_function_source(ctx.start.line)
+        clean_text = self._strip_comments(func_text)
 
-        if '__global__' not in func_text:
+        if '__global__' not in clean_text:
             return self.visitChildren(ctx)
 
-        if '__restrict__' in func_text or '__restrict' in func_text:
+        if '__restrict__' in clean_text or '__restrict' in clean_text:
             return self.visitChildren(ctx)
 
         header_end = func_text.find('{')
