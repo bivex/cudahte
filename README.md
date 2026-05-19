@@ -36,6 +36,16 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | **SharedMemoryBankConflict** | Detects access to `__shared__` memory with a stride that is a multiple of 32, causing serialization of access within a warp. | WARNING |
 | **ArchitecturalCudaLeak** | Detects CUDA-specific code or headers inside Domain/Application layers, enforcing Clean Architecture boundaries. | CRITICAL |
 | **UnifiedMemoryWithoutPrefetch** | Detects `cudaMallocManaged` without explicit `cudaMemPrefetchAsync` in the same context, which triggers slow page faults. | WARNING |
+| **MissingBoundsCheckInKernel** | Detects kernel functions that compute a thread index and access arrays without a bounds guard (`if (tid < N)`), causing out-of-bounds access when the grid is larger than the data. | CRITICAL |
+| **MissingSyncthreadsAfterSharedWrite** | Detects writes to `__shared__` memory followed by reads without an intervening `__syncthreads()`, causing data races and undefined values. | CRITICAL |
+| **IncorrectGridDimensionCalculation** | Detects grid dimension calculated with integer division (`N / blockSize`) instead of ceiling division, leaving trailing elements unprocessed. | WARNING |
+| **SharedMemoryUninitializedForAtomics** | Detects `__shared__` arrays used with atomic operations without prior zero-initialization, producing incorrect accumulation results. | WARNING |
+| **ConstantMemoryWrongCopyMethod** | Detects `cudaMemcpy` used with `__constant__` variables instead of `cudaMemcpyToSymbol`, which fails because constant memory resides in a separate address space. | WARNING |
+| **GlobalAtomicWithoutSharedIntermediate** | Detects atomic operations on global memory arrays without shared memory intermediate, causing severe thread contention when many threads compete for few locations. | WARNING |
+| **SynchronousMemcpyWithActiveStreams** | Detects synchronous `cudaMemcpy` when CUDA streams are active, which blocks the CPU and prevents copy/kernel overlap. Recommends `cudaMemcpyAsync`. | WARNING |
+| **MissingRestrictOnKernelPointers** | Detects kernel functions with multiple pointer parameters lacking `__restrict__` qualifiers, preventing compiler optimizations due to assumed pointer aliasing. | INFO |
+| **NonPowerOf2ReductionBlock** | Detects parallel reduction patterns where block size is not a power of 2, causing iterative halving (`i /= 2`) to skip elements and produce incorrect results. | WARNING |
+| **CudaEventResourceLeak** | Detects `cudaEventCreate` without a matching `cudaEventDestroy`, leaking finite GPU event resources. | WARNING |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 

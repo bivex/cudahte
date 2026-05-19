@@ -27,6 +27,16 @@ from src.infrastructure.rules.global_memory_coalescing_rule import GlobalMemoryC
 from src.infrastructure.rules.shared_memory_bank_conflict_rule import SharedMemoryBankConflictRule
 from src.infrastructure.rules.architectural_cuda_leak_rule import ArchitecturalCudaLeakRule
 from src.infrastructure.rules.unified_memory_prefetch_rule import UnifiedMemoryPrefetchRule
+from src.infrastructure.rules.missing_bounds_check_rule import MissingBoundsCheckRule
+from src.infrastructure.rules.missing_syncthreads_shared_rule import MissingSyncthreadsAfterSharedWriteRule
+from src.infrastructure.rules.incorrect_grid_dimension_rule import IncorrectGridDimensionRule
+from src.infrastructure.rules.shared_memory_uninitialized_atomic_rule import SharedMemoryUninitializedAtomicRule
+from src.infrastructure.rules.constant_memory_copy_rule import ConstantMemoryCopyRule
+from src.infrastructure.rules.global_atomic_contention_rule import GlobalAtomicContentionRule
+from src.infrastructure.rules.sync_memcpy_with_streams_rule import SyncMemcpyWithStreamsRule
+from src.infrastructure.rules.missing_restrict_rule import MissingRestrictOnKernelPointersRule
+from src.infrastructure.rules.non_power_of_2_reduction_rule import NonPowerOf2ReductionBlockRule
+from src.infrastructure.rules.cuda_event_leak_rule import CudaEventLeakRule
 
 def print_smells(smells):
     if not smells:
@@ -71,7 +81,18 @@ def main():
         DeprecatedApiRule,
         GlobalMemoryCoalescingRule,
         SharedMemoryBankConflictRule,
-        ArchitecturalCudaLeakRule
+        ArchitecturalCudaLeakRule,
+        UnifiedMemoryPrefetchRule,
+        MissingBoundsCheckRule,
+        MissingSyncthreadsAfterSharedWriteRule,
+        IncorrectGridDimensionRule,
+        SharedMemoryUninitializedAtomicRule,
+        ConstantMemoryCopyRule,
+        GlobalAtomicContentionRule,
+        SyncMemcpyWithStreamsRule,
+        MissingRestrictOnKernelPointersRule,
+        NonPowerOf2ReductionBlockRule,
+        CudaEventLeakRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 
