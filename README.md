@@ -32,6 +32,7 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | **DefaultStreamUsage** | Detects kernel launches or `cudaMemcpyAsync` calls in the default (NULL) stream, which prevents concurrent execution with other operations. | WARNING |
 | **HardcodedDeviceId** | Detects `cudaSetDevice(0)` or other hardcoded IDs, which may fail on multi-GPU systems. | WARNING |
 | **DeprecatedAPI** | Detects usage of legacy CUDA APIs like `cudaThreadSynchronize` and recommends modern alternatives. | WARNING |
+| **UncoalescedMemoryAccess** | Detects non-coalesced memory access patterns like `ptr[threadIdx.x * stride]` where `stride > 1`, which drastically reduces global memory throughput. | CRITICAL |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 

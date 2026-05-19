@@ -23,6 +23,7 @@ from src.infrastructure.rules.volatile_usage_rule import VolatileUsageRule
 from src.infrastructure.rules.default_stream_usage_rule import DefaultStreamUsageRule
 from src.infrastructure.rules.hardcoded_device_id_rule import HardcodedDeviceIdRule
 from src.infrastructure.rules.deprecated_api_rule import DeprecatedApiRule
+from src.infrastructure.rules.global_memory_coalescing_rule import GlobalMemoryCoalescingRule
 
 def print_smells(smells):
     if not smells:

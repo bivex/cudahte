@@ -3,7 +3,10 @@
 
 volatile int flag = 0; // Volatile usage smell
 
-__global__ void myKernel() {
+__global__ void myKernel(float* data) {
+    // Uncoalesced Memory Access smell
+    data[threadIdx.x * 32] = 1.0f;
+    
     __shared__ float huge_arr[16384]; // Large shared memory allocation smell
 
     // Integer overflow in index
