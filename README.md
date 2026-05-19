@@ -84,11 +84,26 @@ This project strictly adheres to Clean Architecture:
    If you modify the grammar in `parser/*.g4`, regenerate the Python parser using the `antlr4` tool:
    ```bash
    cd parser
-   antlr4 -Dlanguage=Python3 -visitor CUDALexer.g4 CUDAParser.g4
+       antlr4 -Dlanguage=Python3 -visitor CUDALexer.g4 CUDAParser.g4
+       ```
+
+   ## Testing
+
+   The project includes a comprehensive test suite covering all detection rules.
+
+   ```bash
+   # Activate environment
+   source venv/bin/activate
+
+   # Run all tests
+   python3 -m unittest discover tests
+
+   # Run specific test suites
+   python3 tests/test_new_rules.py      # Unit tests for new rules
+   python3 tests/test_integration.py    # Integration test with PMP book examples
    ```
 
-## Usage
-
+   ## Usage
 Activate your virtual environment before running the tool:
 
 ```bash
