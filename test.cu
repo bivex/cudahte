@@ -42,6 +42,7 @@ void doSomething() {
 
 int main() {
     cudaSetDevice(0); // Hardcoded device ID
+    cudaThreadSynchronize(); // Deprecated API
     doSomething();
     return 0;
 }

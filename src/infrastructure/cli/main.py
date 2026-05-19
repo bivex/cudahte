@@ -22,6 +22,7 @@ from src.infrastructure.rules.large_shared_memory_allocation_rule import LargeSh
 from src.infrastructure.rules.volatile_usage_rule import VolatileUsageRule
 from src.infrastructure.rules.default_stream_usage_rule import DefaultStreamUsageRule
 from src.infrastructure.rules.hardcoded_device_id_rule import HardcodedDeviceIdRule
+from src.infrastructure.rules.deprecated_api_rule import DeprecatedApiRule
 
 def print_smells(smells):
     if not smells:
@@ -61,7 +62,9 @@ def main():
         MissingKernelErrorCheckRule,
         LargeSharedMemoryAllocationRule,
         VolatileUsageRule,
-        DefaultStreamUsageRule
+        DefaultStreamUsageRule,
+        HardcodedDeviceIdRule,
+        DeprecatedApiRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 
