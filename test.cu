@@ -7,6 +7,9 @@ __global__ void myKernel(float* data) {
     // Uncoalesced Memory Access smell
     data[threadIdx.x * 32] = 1.0f;
     
+    __shared__ float s_data[1024];
+    s_data[threadIdx.x * 32] = 0.0f; // Bank Conflict
+    
     __shared__ float huge_arr[16384]; // Large shared memory allocation smell
 
     // Integer overflow in index

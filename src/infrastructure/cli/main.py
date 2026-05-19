@@ -24,6 +24,7 @@ from src.infrastructure.rules.default_stream_usage_rule import DefaultStreamUsag
 from src.infrastructure.rules.hardcoded_device_id_rule import HardcodedDeviceIdRule
 from src.infrastructure.rules.deprecated_api_rule import DeprecatedApiRule
 from src.infrastructure.rules.global_memory_coalescing_rule import GlobalMemoryCoalescingRule
+from src.infrastructure.rules.shared_memory_bank_conflict_rule import SharedMemoryBankConflictRule
 
 def print_smells(smells):
     if not smells:
@@ -65,7 +66,9 @@ def main():
         VolatileUsageRule,
         DefaultStreamUsageRule,
         HardcodedDeviceIdRule,
-        DeprecatedApiRule
+        DeprecatedApiRule,
+        GlobalMemoryCoalescingRule,
+        SharedMemoryBankConflictRule
     ]
     analyzer = AntlrCudaAnalyzer(rules)
 
