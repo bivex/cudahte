@@ -113,6 +113,25 @@ void doSomething() {
     cudaStreamDestroy(stream1);
 }
 
+// Step 16: Non-power-of-2 reduction block size
+#define REDUCE_BLOCK_SIZE 100
+__global__ void reduceKernel(float* input, float* output, int N) {
+    __shared__ float sdata[100];
+    int tid = threadIdx.x;
+    int i = blockIdx.x * blockDim.x + tid;
+    sdata[tid] = 0.0f;
+    while (i < N) {
+        sdata[i] += input[i];
+        i += blockDim.x;
+    }
+    __syncthreads();
+    for (int s = blockDim.x / 2; s > 0; s >>= 1) {  // Non-power-of-2: 100/2=50, 50/2=25...
+        if (tid < s) sdata[tid] += sdata[tid + s];
+        __syncthreads();
+    }
+    if (tid == 0) output[blockIdx.x] = sdata[0];
+}
+
 int main() {
     cudaSetDevice(0); // Hardcoded device ID
     cudaThreadSynchronize(); // Deprecated API
