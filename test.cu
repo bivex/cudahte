@@ -41,6 +41,7 @@ void doSomething() {
 }
 
 int main() {
+    cudaSetDevice(0); // Hardcoded device ID
     doSomething();
     return 0;
 }

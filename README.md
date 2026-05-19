@@ -29,6 +29,8 @@ This project leverages [ANTLR4](https://www.antlr.org/) for accurate parsing of 
 | **MissingKernelErrorCheck** | Kernel launches `<<<...>>>` are asynchronous. Without calling `cudaGetLastError()` afterward, invalid grid/block configs fail silently. | CRITICAL |
 | **LargeSharedMemoryAllocation** | Detects static `__shared__` array allocations that are unusually large (>8192 items) and might exceed the hardware 48KB limit without explicit dynamic opt-in. | CRITICAL |
 | **VolatileUsage** | Using `volatile` to synchronize threads or blocks across the GPU memory model is unsafe and undefined behavior. | CRITICAL |
+| **DefaultStreamUsage** | Detects kernel launches or `cudaMemcpyAsync` calls in the default (NULL) stream, which prevents concurrent execution with other operations. | WARNING |
+| **HardcodedDeviceId** | Detects `cudaSetDevice(0)` or other hardcoded IDs, which may fail on multi-GPU systems. | WARNING |
 
 *Note: New rules can be easily added by implementing a new `CUDAParserVisitor` in `src/infrastructure/rules/` and registering it in `src/infrastructure/cli/main.py`.*
 
